@@ -66,4 +66,5 @@ frontend/usuarios.html
 ## Autor
 
 Edson Alves Torres Junior
+
 Projeto desenvolvido para fins acadêmicos.
