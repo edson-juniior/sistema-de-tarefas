@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Projeto Tarefas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Cadastro de Usuário</h2>
+
+        <input id="nome" placeholder="Nome">
+        <input id="email" placeholder="Email">
+        <input id="senha" placeholder="Senha" type="password">
+
+        <button onclick="cadastrar()">Cadastrar</button>
+    </div>
+
+    <script>
+        function cadastrar() {
+            fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nome: document.getElementById('nome').value,
+                    email: document.getElementById('email').value,
+                    senha: document.getElementById('senha').value
+                })
+            })
+                .then(res => res.text())
+                .then(data => alert(data));
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Tarefas</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #f4f6f9;
+        }
+
+        .navbar {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+        }
+
+        .container {
+            width: 900px;
+            margin: 40px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            background: #3498db;
+            color: white;
+            padding: 12px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btnCadastrar {
+            background: #3498db;
+        }
+
+        .btnAtualizar {
+            background: #27ae60;
+            margin-top: 15px;
+        }
+
+        .btnExcluir {
+            background: #e74c3c;
+            padding: 6px 12px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="navbar">
+        📋 Sistema de Tarefas
+    </div>
+
+    <div class="container">
+
+        <div class="card">
+
+            <div class="header">
+
+                <h2>👥 Usuários cadastrados</h2>
+
+                <a href="cadastro.html">
+                    <button class="btnCadastrar">Cadastrar usuário</button>
+                </a>
+
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tabelaUsuarios"></tbody>
+
+            </table>
+
+            <button class="btnAtualizar" onclick="carregarUsuarios()">
+                Atualizar lista
+            </button>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const API = "http://localhost:3000";
+
+        function carregarUsuarios() {
+
+            fetch(API + "/usuarios")
+
+                .then(response => response.json())
+
+                .then(usuarios => {
+
+                    const tabela = document.getElementById("tabelaUsuarios");
+
+                    tabela.innerHTML = "";
+
+                    usuarios.forEach(usuario => {
+
+                        const linha = `
+<tr>
+<td>${usuario.id}</td>
+<td>${usuario.nome}</td>
+<td>${usuario.email}</td>
+<td>
+<button class="btnExcluir" onclick="excluirUsuario(${usuario.id})">
+Excluir
+</button>
+</td>
+</tr>
+`;
+
+                        tabela.innerHTML += linha;
+
+                    });
+
+                })
+
+                .catch(error => {
+
+                    console.error("Erro ao carregar usuários:", error);
+
+                });
+
+        }
+
+        function excluirUsuario(id) {
+
+            if (!confirm("Deseja excluir este usuário?")) return;
+
+            fetch(API + "/usuarios/" + id, {
+
+                method: "DELETE"
+
+            })
+
+                .then(response => response.text())
+
+                .then(msg => {
+
+                    alert(msg);
+
+                    carregarUsuarios();
+
+                })
+
+                .catch(error => {
+
+                    console.error("Erro ao excluir:", error);
+
+                });
+
+        }
+
+        window.onload = carregarUsuarios;
+
+    </script>
+
+</body>
+
+</html>
