@@ -65,6 +65,7 @@ frontend/usuarios.html
 
 ## Aluno
 
-Edson Alves Torres Junior     RA:2401951
+Edson Alves Torres Junior 
+RA:2401951
 
 
