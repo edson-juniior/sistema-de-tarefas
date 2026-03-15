@@ -63,8 +63,8 @@ frontend/usuarios.html
 * Visualize os usuários cadastrados
 * Exclua usuários se necessário
 
-## Autor
+## Aluno
 
-Edson Alves Torres Junior
+Edson Alves Torres Junior     RA:2401951
 
-Projeto desenvolvido para fins acadêmicos.
+
