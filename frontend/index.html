@@ -2,23 +2,58 @@
 <html>
 
 <head>
-    <title>Projeto Tarefas</title>
+    <title>Sistema de Tarefas</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <div class="container">
-        <h2>Cadastro de Usuário</h2>
 
-        <input id="nome" placeholder="Nome">
-        <input id="email" placeholder="Email">
-        <input id="senha" placeholder="Senha" type="password">
+        <h2>Sistema de Tarefas</h2>
 
-        <button onclick="cadastrar()">Cadastrar</button>
+        <button onclick="mostrarCadastro()">Cadastrar Usuário</button>
+        <button onclick="mostrarLogin()">Login</button>
+
+        <!-- Cadastro -->
+        <div id="cadastro" style="display:none; margin-top:20px;">
+
+            <h3>Cadastro de Usuário</h3>
+
+            <input id="nome" placeholder="Nome">
+            <input id="email" placeholder="Email">
+            <input id="senha" placeholder="Senha" type="password">
+
+            <button onclick="cadastrar()">Cadastrar</button>
+
+        </div>
+
+        <!-- Login -->
+        <div id="login" style="display:none; margin-top:20px;">
+
+            <h3>Login</h3>
+
+            <input id="loginEmail" placeholder="Email">
+            <input id="loginSenha" type="password" placeholder="Senha">
+
+            <button onclick="login()">Entrar</button>
+
+        </div>
+
     </div>
 
     <script>
+
+        function mostrarCadastro() {
+            document.getElementById("cadastro").style.display = "block";
+            document.getElementById("login").style.display = "none";
+        }
+
+        function mostrarLogin() {
+            document.getElementById("login").style.display = "block";
+            document.getElementById("cadastro").style.display = "none";
+        }
+
         function cadastrar() {
             fetch('http://localhost:3000/register', {
                 method: 'POST',
@@ -29,9 +64,44 @@
                     senha: document.getElementById('senha').value
                 })
             })
-                .then(res => res.text())
-                .then(data => alert(data));
+                 .then(res => res.text())
+                .then(data => {
+
+                    alert(data);
+
+                    // limpa os campos
+                    document.getElementById('nome').value = "";
+                    document.getElementById('email').value = "";
+                    document.getElementById('senha').value = "";
+
+                    // mostra automaticamente a tela de login
+                    mostrarLogin();
+
+                });
         }
+
+        function login() {
+
+            fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: document.getElementById("loginEmail").value,
+                    senha: document.getElementById("loginSenha").value
+                })
+            })
+                .then(res => {
+                    if (res.status === 200) {
+                        window.location.href = "usuarios.html";
+                    } else {
+                        alert("Email ou senha inválidos");
+                    }
+                });
+
+        }
+
     </script>
 
 </body>

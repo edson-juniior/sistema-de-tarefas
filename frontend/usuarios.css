@@ -1,0 +1,102 @@
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:linear-gradient(135deg,#0f172a,#1e293b,#020617);
+}
+
+/* NAVBAR */
+
+.navbar{
+background:#111827;
+color:white;
+padding:18px;
+font-size:20px;
+font-weight:bold;
+text-align:center;
+box-shadow:0px 5px 15px rgba(0,0,0,0.3);
+}
+
+/* CONTAINER */
+
+.container{
+display:flex;
+justify-content:center;
+margin-top:40px;
+}
+
+/* CARD */
+
+.card{
+background:white;
+padding:30px;
+border-radius:12px;
+width:900px;
+box-shadow:0px 20px 50px rgba(0,0,0,0.35);
+}
+
+/* HEADER */
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+/* TABELA */
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+background:#2563eb;
+color:white;
+padding:12px;
+text-align:left;
+}
+
+td{
+padding:12px;
+border-bottom:1px solid #e5e7eb;
+}
+
+tr:hover{
+background:#f3f4f6;
+}
+
+/* BOTÕES */
+
+button{
+padding:8px 15px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.btnExcluir{
+background:#ef4444;
+color:white;
+}
+
+.btnExcluir:hover{
+background:#dc2626;
+}
+
+.btnAtualizar{
+margin-top:20px;
+background:#22c55e;
+color:white;
+padding:10px 20px;
+}
+
+.btnAtualizar:hover{
+background:#16a34a;
+}
+
+.btnVoltar{
+background:#2563eb;
+color:white;
+}
