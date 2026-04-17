@@ -46,6 +46,16 @@
 
         </div>
 
+        <div class="navbar">
+            <span>🚀 Sistema de Tarefas</span>
+        
+            <div class="menu">
+                <a href="usuarios.html">👥 Usuários</a>
+                <a href="tarefas.html">📋 Tarefas</a>
+                <button onclick="logout()">Sair</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -71,6 +81,10 @@
 <td>${usuario.nome}</td>
 <td>${usuario.email}</td>
 <td>
+<button onclick="verTarefas(${usuario.id}, '${usuario.nome}')">
+Ver tarefas
+</button>
+
 <button class="btnExcluir" onclick="excluirUsuario(${usuario.id})">
 Excluir
 </button>
@@ -102,6 +116,23 @@ Excluir
                 });
 
         }
+
+        function logout() {
+                localStorage.removeItem("usuario_id");
+                localStorage.removeItem("usuario_nome");
+                window.location.href = "index.html";
+            }
+        function verTarefas(id, nome) {
+
+                // salva o usuário no navegador
+                localStorage.setItem("usuario", JSON.stringify({
+                    id: id,
+                    nome: nome
+                }));
+
+                // redireciona pra tela de tarefas
+                window.location.href = "tarefas.html";
+            }    
 
         window.onload = carregarUsuarios;
 

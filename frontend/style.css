@@ -1,14 +1,16 @@
+/* ===== BODY ===== */
 body {
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #0f172a, #1e293b, #020617);
+    margin: 0;
+    padding-top: 80px;
+
     display: flex;
     justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
+    align-items: flex-start;
 }
 
-/* CARD CENTRAL */
+/* ===== CARD LOGIN ===== */
 .container {
     background: white;
     padding: 40px;
@@ -19,7 +21,7 @@ body {
     animation: aparecer 0.6s ease;
 }
 
-/* ANIMAÇÃO */
+/* ===== ANIMAÇÃO ===== */
 @keyframes aparecer{
     from{
         opacity:0;
@@ -31,14 +33,14 @@ body {
     }
 }
 
-/* TITULO */
+/* ===== TITULOS ===== */
 h2{
     margin-bottom:25px;
     font-size:26px;
     color:#111827;
 }
 
-/* INPUTS */
+/* ===== INPUTS ===== */
 input{
     width:100%;
     padding:12px;
@@ -54,7 +56,7 @@ input:focus{
     box-shadow:0 0 6px rgba(37,99,235,0.4);
 }
 
-/* BOTÕES */
+/* ===== BOTÕES ===== */
 button{
     width:100%;
     padding:12px;
@@ -74,10 +76,155 @@ button:hover{
     box-shadow:0px 10px 20px rgba(0,0,0,0.25);
 }
 
-/* ÁREA LOGIN/CADASTRO */
+/* ===== ÁREA LOGIN/CADASTRO ===== */
 #cadastro, #login{
     margin-top:20px;
     padding:20px;
     background:#f3f4f6;
     border-radius:8px;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    width: 700px;
+    background: rgba(15, 23, 42, 0.95);
+    padding: 12px 20px;
+
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    color: white;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.4);
+}
+
+.navbar span {
+    font-weight: bold;
+}
+
+/* MENU NAVBAR */
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* 🔥 LINKS CORRIGIDOS (remove roxo/azul) */
+.menu a,
+.menu a:visited,
+.menu a:active {
+    text-decoration: none;
+    color: #e2e8f0;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.menu a:hover {
+    color: #60a5fa;
+}
+
+/* BOTÃO SAIR */
+.menu button {
+    width: auto;
+    padding: 8px 14px;
+    background: #ef4444;
+    border-radius: 6px;
+}
+
+.menu button:hover {
+    background: #dc2626;
+}
+
+/* ===== TELA DE TAREFAS ===== */
+.tarefas-container {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    margin-top: 40px;
+    width: 800px;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+}
+
+.tarefas-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* USUÁRIO LOGADO */
+.usuario-info {
+    background: #eff6ff;
+    color: #1d4ed8;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    font-size: 14px;
+    border: 1px solid #bfdbfe;
+}
+
+/* FORM TAREFA */
+.form-tarefa {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.form-tarefa input {
+    flex: 1;
+    width: auto;        
+    margin-bottom: 0;
+}
+
+.form-tarefa button {
+    width: auto;
+    padding: 12px 20px;
+}
+
+/* BOTÃO CRIAR */
+.btn-criar {
+    background-color: #22c55e;
+}
+
+.btn-criar:hover {
+    background-color: #16a34a;
+}
+
+/* ===== TABELA ===== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th {
+    background-color: #2563eb;
+    color: white;
+    padding: 10px;
+    text-align: left;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+    background-color: #f1f5f9;
+}
+
+/* BOTÃO EXCLUIR */
+.btn-excluir {
+    background-color: #ef4444;
+    padding: 6px 12px;
+}
+
+.btn-excluir:hover {
+    background-color: #dc2626;
 }

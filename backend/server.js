@@ -55,27 +55,17 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
   const { email, senha } = req.body;
 
-  if (!email || !senha) {
-    return res.status(400).send("Informe email e senha");
-  }
-
   db.query(
-    "SELECT * FROM usuarios WHERE email = ?",
-    [email],
+    "SELECT * FROM usuarios WHERE email = ? AND senha = ?",
+    [email, senha],
     (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
+      if (err) return res.status(500).send(err);
 
-      if (results.length === 0) {
-        return res.status(401).send("Usuário não encontrado");
+      if (results.length > 0) {
+        res.json(results[0]); // 🔥 manda o usuário completo
+      } else {
+        res.status(401).send("Email ou senha inválidos");
       }
-
-      if (results[0].senha !== senha) {
-        return res.status(401).send("Senha incorreta");
-      }
-
-      res.status(200).send("Login realizado com sucesso");
     },
   );
 });
@@ -99,12 +89,16 @@ app.get("/usuarios", (req, res) => {
 app.delete("/usuarios/:id", (req, res) => {
   const id = req.params.id;
 
-  db.query("DELETE FROM usuarios WHERE id = ?", [id], (err, result) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
+  // 1️⃣ deleta tarefas primeiro
+  db.query("DELETE FROM tarefas WHERE usuario_id = ?", [id], (err) => {
+    if (err) return res.status(500).send(err);
 
-    res.send("Usuário excluído com sucesso");
+    // 2️⃣ depois deleta usuário
+    db.query("DELETE FROM usuarios WHERE id = ?", [id], (err) => {
+      if (err) return res.status(500).send(err);
+
+      res.send("Usuário e tarefas excluídos com sucesso");
+    });
   });
 });
 
@@ -137,13 +131,20 @@ app.get("/tarefas/:id", (req, res) => {
     "SELECT * FROM tarefas WHERE usuario_id = ?",
     [usuario_id],
     (err, results) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-
+      if (err) return res.status(500).send(err);
       res.json(results);
     },
   );
+});
+
+app.delete("/tarefas/:id", (req, res) => {
+  const id = req.params.id;
+
+  db.query("DELETE FROM tarefas WHERE id = ?", [id], (err) => {
+    if (err) return res.status(500).send(err);
+
+    res.send("Tarefa excluída com sucesso");
+  });
 });
 
 // ==============================

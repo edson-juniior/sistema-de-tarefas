@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Tarefas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <span>📋 Sistema de Tarefas</span>
+
+        <div class="menu">
+            <a href="usuarios.html">👥 Usuários</a>
+            <a href="tarefas.html">📋 Tarefas</a>
+            <button onclick="logout()">Sair</button>
+        </div>
+    </div>
+
+    <!-- CARD -->
+    <div class="tarefas-container">
+
+        <h2>📋 Minhas Tarefas</h2>
+
+        <!-- AGORA CORRETO -->
+        <p id="nomeUsuario" class="usuario-info"></p>
+
+        <div class="form-tarefa">
+            <input id="titulo" placeholder="Título">
+            <input id="descricao" placeholder="Descrição">
+            <button class="btn-criar" onclick="criarTarefa()">Criar</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="listaTarefas"></tbody>
+        </table>
+
+    </div>
+
+    <script>
+
+        const API = "http://localhost:3000";
+
+        const usuario = JSON.parse(localStorage.getItem("usuario"));
+
+        if (!usuario) {
+            alert("Você precisa fazer login!");
+            window.location.href = "index.html";
+        }
+
+        const usuario_id = usuario.id;
+
+        // ✅ AGORA VAI FUNCIONAR CERTO
+        document.getElementById("nomeUsuario").innerHTML =
+            "👤 <strong>Usuário:</strong> " + usuario.nome;
+
+        function criarTarefa() {
+
+            const titulo = document.getElementById("titulo").value;
+            const descricao = document.getElementById("descricao").value;
+
+            fetch(API + "/tarefas", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    titulo,
+                    descricao,
+                    usuario_id
+                })
+            })
+                .then(res => res.text())
+                .then(msg => {
+
+                    alert(msg);
+
+                    document.getElementById("titulo").value = "";
+                    document.getElementById("descricao").value = "";
+
+                    carregarTarefas();
+                });
+
+        }
+
+        function carregarTarefas() {
+
+            fetch(API + "/tarefas/" + usuario_id)
+                .then(res => res.json())
+                .then(tarefas => {
+
+                    const lista = document.getElementById("listaTarefas");
+                    lista.innerHTML = "";
+
+                    tarefas.forEach(tarefa => {
+
+                        lista.innerHTML += `
+                        <tr>
+                            <td>${tarefa.id}</td>
+                            <td>${tarefa.titulo}</td>
+                            <td>${tarefa.descricao}</td>
+                            <td>
+                                <button class="btn-excluir" onclick="excluir(${tarefa.id})">
+                                    Excluir
+                                </button>
+                            </td>
+                        </tr>
+                        `;
+
+                    });
+
+                });
+
+        }
+
+        function excluir(id) {
+
+            if (!confirm("Deseja excluir essa tarefa?")) return;
+
+            fetch(API + "/tarefas/" + id, {
+                method: "DELETE"
+            })
+                .then(res => res.text())
+                .then(msg => {
+                    alert(msg);
+                    carregarTarefas();
+                });
+
+        }
+
+        function logout() {
+            localStorage.removeItem("usuario"); // 🔥 corrigido
+            window.location.href = "index.html";
+        }
+
+        window.onload = carregarTarefas;
+
+    </script>
+
+</body>
+
+</html>
