@@ -24,25 +24,54 @@
 
         <h2>📋 Minhas Tarefas</h2>
 
-        <!-- AGORA CORRETO -->
+        <!-- DASHBOARD -->
+        <div class="dashboard">
+
+            <div class="card-dashboard">
+                <h3 id="totalTarefas">0</h3>
+                <p>Total</p>
+            </div>
+
+            <div class="card-dashboard concluida">
+                <h3 id="tarefasConcluidas">0</h3>
+                <p>Concluídas</p>
+            </div>
+
+            <div class="card-dashboard pendente">
+                <h3 id="tarefasPendentes">0</h3>
+                <p>Pendentes</p>
+            </div>
+
+        </div>
+
+        <!-- USUÁRIO -->
         <p id="nomeUsuario" class="usuario-info"></p>
 
+        <!-- FORM -->
         <div class="form-tarefa">
             <input id="titulo" placeholder="Título">
             <input id="descricao" placeholder="Descrição">
-            <button class="btn-criar" onclick="criarTarefa()">Criar</button>
+
+            <button class="btn-criar" onclick="criarTarefa()">
+                Criar
+            </button>
         </div>
 
+        <!-- TABELA -->
         <table>
+
             <thead>
                 <tr>
                     <th>ID</th>
                     <th>Título</th>
                     <th>Descrição</th>
+                    <th>Status</th>
                     <th>Ações</th>
                 </tr>
             </thead>
+
             <tbody id="listaTarefas"></tbody>
+
         </table>
 
     </div>
@@ -53,6 +82,7 @@
 
         const usuario = JSON.parse(localStorage.getItem("usuario"));
 
+        // LOGIN
         if (!usuario) {
             alert("Você precisa fazer login!");
             window.location.href = "index.html";
@@ -60,14 +90,68 @@
 
         const usuario_id = usuario.id;
 
-        // ✅ AGORA VAI FUNCIONAR CERTO
+        // NOME USUÁRIO
         document.getElementById("nomeUsuario").innerHTML =
             "👤 <strong>Usuário:</strong> " + usuario.nome;
+
+        // CONTROLE EDIÇÃO
+        let tarefaEditando = null;
+
+        // =========================
+        // CRIAR / EDITAR TAREFA
+        // =========================
 
         function criarTarefa() {
 
             const titulo = document.getElementById("titulo").value;
             const descricao = document.getElementById("descricao").value;
+
+            // VALIDAÇÃO
+            if (!titulo || !descricao) {
+                alert("Preencha todos os campos");
+                return;
+            }
+
+            // ======================
+            // EDITAR
+            // ======================
+
+            if (tarefaEditando) {
+
+                fetch(API + "/tarefas/" + tarefaEditando, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        titulo: titulo,
+                        descricao: descricao,
+                        status: "Concluída"
+                    })
+                })
+                    .then(res => res.text())
+                    .then(msg => {
+
+                        alert(msg);
+
+                        tarefaEditando = null;
+
+                        document.querySelector(".btn-criar").innerText = "Criar";
+
+                        document.getElementById("titulo").value = "";
+                        document.getElementById("descricao").value = "";
+
+                        carregarTarefas();
+                        carregarDashboard();
+
+                    });
+
+                return;
+            }
+
+            // ======================
+            // CRIAR
+            // ======================
 
             fetch(API + "/tarefas", {
                 method: "POST",
@@ -89,9 +173,15 @@
                     document.getElementById("descricao").value = "";
 
                     carregarTarefas();
+                    carregarDashboard();
+
                 });
 
         }
+
+        // =========================
+        // LISTAR TAREFAS
+        // =========================
 
         function carregarTarefas() {
 
@@ -100,21 +190,54 @@
                 .then(tarefas => {
 
                     const lista = document.getElementById("listaTarefas");
+
                     lista.innerHTML = "";
 
                     tarefas.forEach(tarefa => {
 
                         lista.innerHTML += `
+                        
                         <tr>
+
                             <td>${tarefa.id}</td>
+
                             <td>${tarefa.titulo}</td>
+
                             <td>${tarefa.descricao}</td>
-                            <td>
-                                <button class="btn-excluir" onclick="excluir(${tarefa.id})">
-                                    Excluir
-                                </button>
+
+                            <td class="${tarefa.status === 'Concluída'
+                                ? 'status-concluida'
+                                : 'status-pendente'}">
+
+                                ${tarefa.status}
+
                             </td>
+
+                            <td class="acoes">
+
+                                <button class="btn-editar"
+                                    onclick="editar(
+                                        ${tarefa.id},
+                                        '${tarefa.titulo}',
+                                        '${tarefa.descricao}',
+                                        '${tarefa.status}'
+                                    )">
+
+                                    Editar
+
+                                </button>
+
+                                <button class="btn-excluir"
+                                    onclick="excluir(${tarefa.id})">
+
+                                    Excluir
+
+                                </button>
+
+                            </td>
+
                         </tr>
+
                         `;
 
                     });
@@ -122,6 +245,25 @@
                 });
 
         }
+
+        // =========================
+        // EDITAR
+        // =========================
+
+        function editar(id, titulo, descricao, status) {
+
+            document.getElementById("titulo").value = titulo;
+            document.getElementById("descricao").value = descricao;
+
+            tarefaEditando = id;
+
+            document.querySelector(".btn-criar").innerText = "Salvar";
+
+        }
+
+        // =========================
+        // EXCLUIR
+        // =========================
 
         function excluir(id) {
 
@@ -132,18 +274,61 @@
             })
                 .then(res => res.text())
                 .then(msg => {
+
                     alert(msg);
+
                     carregarTarefas();
+                    carregarDashboard();
+
                 });
 
         }
 
+        // =========================
+        // LOGOUT
+        // =========================
+
         function logout() {
-            localStorage.removeItem("usuario"); // 🔥 corrigido
+
+            localStorage.removeItem("usuario");
+
             window.location.href = "index.html";
+
         }
 
-        window.onload = carregarTarefas;
+        // =========================
+        // DASHBOARD
+        // =========================
+
+        function carregarDashboard() {
+
+            fetch(API + "/dashboard/" + usuario_id)
+                .then(res => res.json())
+                .then(data => {
+
+                    document.getElementById("totalTarefas").innerText =
+                        data.total || 0;
+
+                    document.getElementById("tarefasConcluidas").innerText =
+                        data.concluidas || 0;
+
+                    document.getElementById("tarefasPendentes").innerText =
+                        data.pendentes || 0;
+
+                });
+
+        }
+
+        // =========================
+        // LOAD
+        // =========================
+
+        window.onload = () => {
+
+            carregarTarefas();
+            carregarDashboard();
+
+        };
 
     </script>
 

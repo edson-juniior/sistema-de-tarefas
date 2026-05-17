@@ -228,3 +228,61 @@ tr:hover {
 .btn-excluir:hover {
     background-color: #dc2626;
 }
+
+/* DASHBOARD */
+.dashboard {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card-dashboard {
+    flex: 1;
+    background: #2563eb;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.card-dashboard h3 {
+    font-size: 28px;
+    margin: 0;
+}
+
+.card-dashboard p {
+    margin-top: 10px;
+}
+
+.concluida {
+    background: #16a34a;
+}
+
+.pendente {
+    background: #f59e0b;
+}
+
+/* EDITAR */
+.btn-editar {
+    background: #f59e0b;
+    margin-right: 5px;
+}
+
+.btn-editar:hover {
+    background: #d97706;
+}
+
+.acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.status-concluida{
+    color:#16a34a;
+    font-weight:bold;
+}
+
+.status-pendente{
+    color:#f59e0b;
+    font-weight:bold;
+}
