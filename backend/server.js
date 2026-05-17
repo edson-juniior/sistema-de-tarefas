@@ -149,6 +149,58 @@ app.delete("/tarefas/:id", (req, res) => {
 
 // ==============================
 
+// EDITAR TAREFA
+// ==============================
+app.put("/tarefas/:id", (req, res) => {
+
+  const id = req.params.id;
+
+  const { titulo, descricao, status } = req.body;
+
+  db.query(
+    "UPDATE tarefas SET titulo = ?, descricao = ?, status = ? WHERE id = ?",
+    [titulo, descricao, status, id],
+    (err, result) => {
+
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      res.send("Tarefa atualizada com sucesso");
+
+    }
+  );
+
+});
+
+// ==============================
+// DASHBOARD
+// ==============================
+app.get("/dashboard/:id", (req, res) => {
+
+  const usuario_id = req.params.id;
+
+  db.query(
+    `SELECT
+      COUNT(*) as total,
+      SUM(status = 'Concluída') as concluidas,
+      SUM(status = 'Pendente') as pendentes
+    FROM tarefas
+    WHERE usuario_id = ?`,
+    [usuario_id],
+    (err, results) => {
+
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      res.json(results[0]);
+
+    }
+  );
+
+});
+
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000");
 });
