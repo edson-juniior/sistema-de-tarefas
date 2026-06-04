@@ -286,3 +286,74 @@ tr:hover {
     color:#f59e0b;
     font-weight:bold;
 }
+
+select {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    height: 45px;
+}
+
+.prioridade-alta {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+.prioridade-media {
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+.prioridade-baixa {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+.btn-concluir {
+    background: #16a34a;
+    margin-bottom: 5px;
+}
+
+.btn-concluir:hover {
+    background: #15803d;
+}
+
+.input-pesquisa{
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+td {
+    vertical-align: middle;
+}
+
+.acoes {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+
+.status-concluida{
+    color: green;
+    font-weight: bold;
+}
+
+.status-pendente{
+    color: orange;
+    font-weight: bold;
+}
+
+.input-pesquisa{
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}

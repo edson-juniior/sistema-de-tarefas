@@ -106,11 +106,11 @@ app.delete("/usuarios/:id", (req, res) => {
 // CRIAR TAREFA
 // ==============================
 app.post("/tarefas", (req, res) => {
-  const { titulo, descricao, usuario_id } = req.body;
+  const { titulo, descricao, prioridade, usuario_id } = req.body;
 
   db.query(
-    "INSERT INTO tarefas (titulo, descricao, usuario_id) VALUES (?, ?, ?)",
-    [titulo, descricao, usuario_id],
+    "INSERT INTO tarefas (titulo, descricao, prioridade, usuario_id, status) VALUES (?, ?, ?, ?, ?)",
+    [titulo, descricao, prioridade, usuario_id, "Pendente"],
     (err, result) => {
       if (err) {
         return res.status(500).send(err);
@@ -152,27 +152,22 @@ app.delete("/tarefas/:id", (req, res) => {
 // EDITAR TAREFA
 // ==============================
 app.put("/tarefas/:id", (req, res) => {
-
   const id = req.params.id;
 
-  const { titulo, descricao, status } = req.body;
+  const { titulo, descricao, prioridade } = req.body;
 
   db.query(
-    "UPDATE tarefas SET titulo = ?, descricao = ?, status = ? WHERE id = ?",
-    [titulo, descricao, status, id],
-    (err, result) => {
-
+    "UPDATE tarefas SET titulo = ?, descricao = ?, prioridade = ? WHERE id = ?",
+    [titulo, descricao, prioridade, id],
+    (err) => {
       if (err) {
         return res.status(500).send(err);
       }
 
       res.send("Tarefa atualizada com sucesso");
-
-    }
+    },
   );
-
 });
-
 // ==============================
 // DASHBOARD
 // ==============================
@@ -195,6 +190,30 @@ app.get("/dashboard/:id", (req, res) => {
       }
 
       res.json(results[0]);
+
+    }
+  );
+
+});
+
+// ==============================
+// CONCLUIR TAREFA
+// ==============================
+
+app.put("/tarefas/concluir/:id", (req, res) => {
+
+  const id = req.params.id;
+
+  db.query(
+    "UPDATE tarefas SET status = 'Concluída' WHERE id = ?",
+    [id],
+    (err) => {
+
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      res.send("Tarefa concluída com sucesso");
 
     }
   );

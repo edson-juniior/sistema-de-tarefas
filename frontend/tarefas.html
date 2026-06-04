@@ -52,10 +52,20 @@
             <input id="titulo" placeholder="Título">
             <input id="descricao" placeholder="Descrição">
 
+            <select id="prioridade">
+                <option value="Baixa"> Baixa</option>
+                <option value="Média"> Média</option>
+                <option value="Alta"> Alta</option>
+            </select>
+
             <button class="btn-criar" onclick="criarTarefa()">
                 Criar
             </button>
         </div>
+
+        <input
+         type="text" id="pesquisa" placeholder="🔍 Pesquisar tarefa" onkeyup="carregarTarefas()" class="input-pesquisa"
+          />
 
         <!-- TABELA -->
         <table>
@@ -65,6 +75,7 @@
                     <th>ID</th>
                     <th>Título</th>
                     <th>Descrição</th>
+                    <th>prioridade</th>
                     <th>Status</th>
                     <th>Ações</th>
                 </tr>
@@ -103,30 +114,73 @@
 
         function criarTarefa() {
 
-            const titulo = document.getElementById("titulo").value;
-            const descricao = document.getElementById("descricao").value;
+                const titulo = document.getElementById("titulo").value;
+                const descricao = document.getElementById("descricao").value;
+                const prioridade = document.getElementById("prioridade").value;
 
-            // VALIDAÇÃO
-            if (!titulo || !descricao) {
-                alert("Preencha todos os campos");
-                return;
-            }
+                // VALIDAÇÃO
+                if (!titulo || !descricao) {
+                    alert("Preencha todos os campos");
+                    return;
+                }
 
-            // ======================
-            // EDITAR
-            // ======================
+                // ======================
+                // EDITAR
+                // ======================
 
-            if (tarefaEditando) {
+                if (tarefaEditando) {
 
-                fetch(API + "/tarefas/" + tarefaEditando, {
-                    method: "PUT",
+                    fetch(API + "/tarefas/" + tarefaEditando, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            titulo: titulo,
+                            descricao: descricao,
+                            prioridade: prioridade
+                        })
+                    })
+                        .then(res => res.text())
+                        .then(msg => {
+
+                            alert(msg);
+
+                            tarefaEditando = null;
+
+                            document.querySelector(".btn-criar").innerText = "Criar";
+
+                            document.getElementById("titulo").value = "";
+                            document.getElementById("descricao").value = "";
+                            document.getElementById("prioridade").value = "Baixa";
+
+                            carregarTarefas();
+                            carregarDashboard();
+
+                        });
+
+                    return;
+
+                    if (titulo.trim().length < 3) {
+                        alert("Título muito curto");
+                        return;
+                    }
+                }
+
+                // ======================
+                // CRIAR
+                // ======================
+
+                fetch(API + "/tarefas", {
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        titulo: titulo,
-                        descricao: descricao,
-                        status: "Concluída"
+                        titulo,
+                        descricao,
+                        prioridade,
+                        usuario_id
                     })
                 })
                     .then(res => res.text())
@@ -134,50 +188,16 @@
 
                         alert(msg);
 
-                        tarefaEditando = null;
-
-                        document.querySelector(".btn-criar").innerText = "Criar";
-
                         document.getElementById("titulo").value = "";
                         document.getElementById("descricao").value = "";
+                        document.getElementById("prioridade").value = "Baixa";
 
                         carregarTarefas();
                         carregarDashboard();
 
                     });
 
-                return;
             }
-
-            // ======================
-            // CRIAR
-            // ======================
-
-            fetch(API + "/tarefas", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    titulo,
-                    descricao,
-                    usuario_id
-                })
-            })
-                .then(res => res.text())
-                .then(msg => {
-
-                    alert(msg);
-
-                    document.getElementById("titulo").value = "";
-                    document.getElementById("descricao").value = "";
-
-                    carregarTarefas();
-                    carregarDashboard();
-
-                });
-
-        }
 
         // =========================
         // LISTAR TAREFAS
@@ -185,82 +205,123 @@
 
         function carregarTarefas() {
 
-            fetch(API + "/tarefas/" + usuario_id)
-                .then(res => res.json())
-                .then(tarefas => {
+                const pesquisa = document
+                    .getElementById("pesquisa")
+                    .value
+                    .toLowerCase();
 
-                    const lista = document.getElementById("listaTarefas");
+                fetch(API + "/tarefas/" + usuario_id)
+                    .then(res => res.json())
+                    .then(tarefas => {
 
-                    lista.innerHTML = "";
+                        const lista = document.getElementById("listaTarefas");
+                        lista.innerHTML = "";
 
-                    tarefas.forEach(tarefa => {
+                        tarefas
+                            .filter(tarefa =>
+                                tarefa.titulo.toLowerCase().includes(pesquisa)
+                            )
+                            .forEach(tarefa => {
 
-                        lista.innerHTML += `
-                        
-                        <tr>
+                                lista.innerHTML += `
+                    <tr>
 
-                            <td>${tarefa.id}</td>
+                        <td>${tarefa.id}</td>
 
-                            <td>${tarefa.titulo}</td>
+                        <td>${tarefa.titulo}</td>
 
-                            <td>${tarefa.descricao}</td>
+                        <td>${tarefa.descricao}</td>
 
-                            <td class="${tarefa.status === 'Concluída'
-                                ? 'status-concluida'
-                                : 'status-pendente'}">
+                        <td class="
+                            ${tarefa.prioridade === 'Alta'
+                                        ? 'prioridade-alta'
+                                        : tarefa.prioridade === 'Média'
+                                            ? 'prioridade-media'
+                                            : 'prioridade-baixa'}
+                        ">
+                            ${tarefa.prioridade}
+                        </td>
 
-                                ${tarefa.status}
+                        <td class="
+                            ${tarefa.status === 'Concluída'
+                                        ? 'status-Concluida'
+                                        : 'status-Pendente'}
+                        ">
+                            ${tarefa.status}
+                        </td>
 
-                            </td>
+                        <td class="acoes">
 
-                            <td class="acoes">
-
-                                <button class="btn-editar"
-                                    onclick="editar(
-                                        ${tarefa.id},
-                                        '${tarefa.titulo}',
-                                        '${tarefa.descricao}',
-                                        '${tarefa.status}'
-                                    )">
-
-                                    Editar
-
+                            ${tarefa.status !== 'Concluída'
+                                        ? `
+                                <button
+                                    class="btn-concluir"
+                                    onclick="concluir(${tarefa.id})">
+                                    Concluir
                                 </button>
+                                `
+                                        : '<div style="width:100px"></div>'
+                                    }
 
-                                <button class="btn-excluir"
-                                    onclick="excluir(${tarefa.id})">
+                            <button
+                                class="btn-editar"
+                                onclick="editar(
+                                    ${tarefa.id},
+                                    '${tarefa.titulo}',
+                                    '${tarefa.descricao}',
+                                    '${tarefa.prioridade}'
+                                )">
+                                Editar
+                            </button>
 
-                                    Excluir
+                            <button
+                                class="btn-excluir"
+                                onclick="excluir(${tarefa.id})">
+                                Excluir
+                            </button>
 
-                                </button>
+                        </td>
 
-                            </td>
-
-                        </tr>
-
-                        `;
+                    </tr>
+                    `;
+                            });
 
                     });
 
-                });
-
-        }
+            }
 
         // =========================
         // EDITAR
         // =========================
 
-        function editar(id, titulo, descricao, status) {
+        function editar(id, titulo, descricao, prioridade) {
 
-            document.getElementById("titulo").value = titulo;
-            document.getElementById("descricao").value = descricao;
+                document.getElementById("titulo").value = titulo;
+                document.getElementById("descricao").value = descricao;
+                document.getElementById("prioridade").value = prioridade;
 
-            tarefaEditando = id;
+                tarefaEditando = id;
 
-            document.querySelector(".btn-criar").innerText = "Salvar";
+                document.querySelector(".btn-criar").innerText = "Salvar";
 
-        }
+            }
 
+        function concluir(id) {
+
+                fetch(API + "/tarefas/concluir/" + id, {
+                    method: "PUT"
+                })
+                    .then(res => res.text())
+                    .then(msg => {
+
+                        alert(msg);
+
+                        carregarTarefas();
+                        carregarDashboard();
+
+                    });
+
+            }
         // =========================
         // EXCLUIR
         // =========================
